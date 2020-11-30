@@ -1,0 +1,9 @@
+{
+  "name": "haraka-plugin-queue-s3",
+  "version": "0.1.0",
+  "description": "A Haraka plugin that stores messages in a s3 bucket.",
+  "main": "index.js",
+  "repository": "git@github.com:mfogel/haraka-plugin-queue-s3.git",
+  "author": "Mike Fogel <mike@fogel.ca>",
+  "license": "MIT"
+}
