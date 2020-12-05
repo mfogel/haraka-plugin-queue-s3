@@ -19,13 +19,13 @@ exports.queue = async function (next, connection, params) {
   // Hence we read the value into a buffer before passing it to the SDK.
   connection.logdebug(this, 'Buffering message')
   const body = await getStream.buffer(txn.message_stream)
-  const rcpts = JSON.stringify(txn.rcpt_to.map((rcpt) => rcpt.address()))
+  const rcpts = txn.rcpt_to.map((rcpt) => rcpt.address()).join(',')
 
   const cmd = new PutObjectCommand({
     Bucket: this.bucketName,
     Key: txn.uuid,
     Body: body,
-    Metadata: {rcpts: rcpts},
+    Metadata: {rcpts},
   })
 
   connection.loginfo(this, 'Putting message to S3')

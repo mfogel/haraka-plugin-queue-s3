@@ -99,7 +99,7 @@ describe('queue()', () => {
         Bucket: thisMock.bucketName,
         Key: connection.transaction.uuid,
         Body: data,
-        Metadata: {rcpts: JSON.stringify([address])},
+        Metadata: {rcpts: address},
       })
       expect(thisMock.client.send).toHaveBeenCalledTimes(1)
       expect(thisMock.client.send.mock.calls[0]).toHaveLength(1)
@@ -137,7 +137,7 @@ describe('queue()', () => {
       Bucket: thisMock.bucketName,
       Key: connection.transaction.uuid,
       Body: data,
-      Metadata: {rcpts: JSON.stringify(addresses)},
+      Metadata: {rcpts: addresses.join(',')},
     })
   })
 
