@@ -3,6 +3,7 @@ jest.mock('@aws-sdk/client-s3')
 const {AssertionError} = require('assert')
 const {Readable} = require('stream')
 const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
+const {createHash} = require('crypto')
 const {queue, register} = require('.')
 
 const getRandomString = () => Math.random().toString(36).substring(4)
@@ -62,6 +63,7 @@ describe('queue()', () => {
   }
   let thisMock
   let data
+  let md5
 
   beforeEach(() => {
     thisMock = {
@@ -69,6 +71,7 @@ describe('queue()', () => {
       bucketName: getRandomString(),
     }
     data = Buffer.from(getRandomString(), 'utf8')
+    md5 = createHash('md5').update(data).digest('base64')
     connection.transaction.rcpt_to = []
     connection.transaction.uuid = getRandomString()
     connection.transaction.message_stream = Readable.from(data)
@@ -99,7 +102,8 @@ describe('queue()', () => {
         Bucket: thisMock.bucketName,
         Key: connection.transaction.uuid,
         Body: data,
-        Metadata: {rcpts: address},
+        ContentMD5: md5,
+        Metadata: {rcpts: address, 'content-md5': md5},
       })
       expect(thisMock.client.send).toHaveBeenCalledTimes(1)
       expect(thisMock.client.send.mock.calls[0]).toHaveLength(1)
@@ -137,7 +141,8 @@ describe('queue()', () => {
       Bucket: thisMock.bucketName,
       Key: connection.transaction.uuid,
       Body: data,
-      Metadata: {rcpts: addresses.join(',')},
+      ContentMD5: md5,
+      Metadata: {rcpts: addresses.join(','), 'content-md5': md5},
     })
   })
 

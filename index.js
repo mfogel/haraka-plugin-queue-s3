@@ -1,4 +1,5 @@
 const getStream = require('get-stream')
+const {createHash} = require('crypto')
 const {S3Client, PutObjectCommand} = require('@aws-sdk/client-s3')
 const {strict: assert} = require('assert')
 
@@ -19,13 +20,15 @@ exports.queue = async function (next, connection, params) {
   // Hence we read the value into a buffer before passing it to the SDK.
   connection.logdebug(this, 'Buffering message')
   const body = await getStream.buffer(txn.message_stream)
+  const bodyMd5 = createHash('md5').update(body).digest('base64')
   const rcpts = txn.rcpt_to.map((rcpt) => rcpt.address()).join(',')
 
   const cmd = new PutObjectCommand({
     Bucket: this.bucketName,
     Key: txn.uuid,
     Body: body,
-    Metadata: {rcpts},
+    ContentMD5: bodyMd5,
+    Metadata: {rcpts, 'content-md5': bodyMd5},
   })
 
   connection.loginfo(this, 'Putting message to S3')
