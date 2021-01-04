@@ -28,7 +28,7 @@ AWS Credentials are assumed to be provided out-of-band (ie. via environment vari
 
 ## Changelog
 
-### master (not yet released)
+### v0.2
 
 - Add `x-amz-meta-content-md5` S3 custom header
 
