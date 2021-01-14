@@ -7,6 +7,7 @@ const {createHash} = require('crypto')
 const {queue, register} = require('.')
 
 const getRandomString = () => Math.random().toString(36).substring(4)
+const ContentType = 'message/rfc822'
 
 describe('register()', () => {
   const getThisMock = (configMock) => {
@@ -103,6 +104,7 @@ describe('queue()', () => {
         Key: connection.transaction.uuid,
         Body: data,
         ContentMD5: md5,
+        ContentType,
         Metadata: {rcpts: address, 'content-md5': md5},
       })
       expect(thisMock.client.send).toHaveBeenCalledTimes(1)
@@ -142,6 +144,7 @@ describe('queue()', () => {
       Key: connection.transaction.uuid,
       Body: data,
       ContentMD5: md5,
+      ContentType,
       Metadata: {rcpts: addresses.join(','), 'content-md5': md5},
     })
   })

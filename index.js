@@ -28,6 +28,7 @@ exports.queue = async function (next, connection, params) {
     Key: txn.uuid,
     Body: body,
     ContentMD5: bodyMd5,
+    ContentType: 'message/rfc822',
     Metadata: {rcpts, 'content-md5': bodyMd5},
   })
 

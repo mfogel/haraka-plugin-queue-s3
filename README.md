@@ -28,6 +28,10 @@ AWS Credentials are assumed to be provided out-of-band (ie. via environment vari
 
 ## Changelog
 
+### master
+
+- Set content type of queued messages to `message/rfc822`
+
 ### v0.2
 
 - Add `x-amz-meta-content-md5` S3 custom header
